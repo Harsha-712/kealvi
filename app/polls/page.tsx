@@ -1,7 +1,7 @@
 import PollCard from "./PollCard";
 
 async function getPolls() {
-  const res = await fetch("http://localhost:3000/api/polls", {
+  const res = await fetch("/api/polls", {
     cache: "no-store",
   });
 
