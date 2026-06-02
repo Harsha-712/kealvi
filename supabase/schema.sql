@@ -64,3 +64,26 @@ from (
     (24, 'How do I scale reads with replicas?', 'Ravi'),
     (25, 'What''s the best way to add auth later?', 'Priya')
 ) as seed(n, body, author);
+
+
+-- Polls Table
+create table polls (
+  id uuid primary key default gen_random_uuid(),
+  question text not null,
+  created_at timestamptz default now()
+);
+
+-- Poll Options Table
+create table poll_options (
+  id uuid primary key default gen_random_uuid(),
+  poll_id uuid not null references polls(id) on delete cascade,
+  option_text text not null
+);
+
+-- Poll Votes Table
+create table poll_votes (
+  id uuid primary key default gen_random_uuid(),
+  option_id uuid not null references poll_options(id) on delete cascade,
+  voter_id text not null,
+  created_at timestamptz default now()
+);
