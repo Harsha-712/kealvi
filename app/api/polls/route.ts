@@ -6,12 +6,13 @@ export async function GET() {
     const { data, error } = await supabase
       .from("polls")
       .select(`
-        *,
-        poll_options (
-          id,
-          option_text
-        )
-      `)
+  *,
+  poll_options (
+    id,
+    option_text,
+    poll_votes(count)
+  )
+`)
       .order("created_at", { ascending: false });
 
     if (error) {
