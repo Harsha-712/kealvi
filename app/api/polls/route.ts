@@ -21,7 +21,10 @@ export async function GET() {
       );
     }
 
-    return NextResponse.json(data ?? []);
+    return NextResponse.json({
+  source: "new-deployment",
+  data: data ?? [],
+});
   } catch (err: any) {
     return NextResponse.json(
       { error: err.message || "Server error" },
