@@ -1,27 +1,12 @@
 import { supabase } from "@/lib/supabase";
 import { NextRequest, NextResponse } from "next/server";
 
-
-
+// 🔧 TEMP TEST GET (for debugging Vercel issue)
 export async function GET() {
-  const { data, error } = await supabase
-    .from("polls")
-    .select(`
-      *,
-      poll_options (
-        id,
-        option_text
-      )
-    `)
-    .order("created_at", { ascending: false });
-
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
-  }
-
-  return NextResponse.json(data);
+  return NextResponse.json({ ok: true });
 }
 
+// CREATE POLL
 export async function POST(req: NextRequest) {
   try {
     const { question, options } = await req.json();
@@ -33,7 +18,10 @@ export async function POST(req: NextRequest) {
       .single();
 
     if (pollError) {
-      return NextResponse.json({ error: pollError.message }, { status: 500 });
+      return NextResponse.json(
+        { error: pollError.message },
+        { status: 500 }
+      );
     }
 
     const optionRows = options.map((option: string) => ({
@@ -46,7 +34,10 @@ export async function POST(req: NextRequest) {
       .insert(optionRows);
 
     if (optionError) {
-      return NextResponse.json({ error: optionError.message }, { status: 500 });
+      return NextResponse.json(
+        { error: optionError.message },
+        { status: 500 }
+      );
     }
 
     return NextResponse.json(poll);
@@ -56,5 +47,4 @@ export async function POST(req: NextRequest) {
       { status: 500 }
     );
   }
-  
 }
