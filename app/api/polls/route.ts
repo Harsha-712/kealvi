@@ -1,6 +1,8 @@
 import { supabase } from "@/lib/supabase";
 import { NextRequest, NextResponse } from "next/server";
 
+
+
 export async function GET() {
   const { data, error } = await supabase
     .from("polls")
@@ -54,4 +56,5 @@ export async function POST(req: NextRequest) {
       { status: 500 }
     );
   }
+  
 }
