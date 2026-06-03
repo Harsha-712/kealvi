@@ -3,7 +3,11 @@ import { NextRequest, NextResponse } from "next/server";
 
 // 🔧 TEMP TEST GET (for debugging Vercel issue)
 export async function GET() {
-  return NextResponse.json({ ok: true });
+  try {
+    return Response.json({ ok: true });
+  } catch (e) {
+    return Response.json({ error: "failed" }, { status: 500 });
+  }
 }
 
 // CREATE POLL
