@@ -1,10 +1,11 @@
-
 "use client";
 
 import { useState } from "react";
 
 export default function PollCard({ poll }: any) {
-  const [selectedOption, setSelectedOption] = useState("");
+  
+const [selectedOption, setSelectedOption] = useState("");
+const [prediction, setPrediction] = useState("");
 
   async function handleVote() {
     if (!selectedOption) {
@@ -12,23 +13,50 @@ export default function PollCard({ poll }: any) {
       return;
     }
 
-    const res = await fetch("/api/polls/vote", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        optionId: selectedOption,
-      }),
-    });
+  const res = await fetch("/api/polls/vote", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      optionId: selectedOption,
+    }),
+  });
 
-    const data = await res.json();
+  const data = await res.json();
 
-    if (data.success) {
-      alert("Vote submitted!");
-      window.location.reload();
-    }
+  if (data.success) {
+    alert("Vote submitted!");
+    window.location.reload();
   }
+}
+
+async function handlePrediction() {
+  if (!prediction) {
+    alert("Select a prediction");
+    return;
+  }
+
+  const res = await fetch("/api/polls/predict", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      pollId: poll.id,
+      optionId: prediction,
+    }),
+  });
+
+  const data = await res.json();
+
+  if (data.success) {
+    alert("Prediction submitted!");
+  } else {
+    alert(data.error || "Something went wrong");
+  }
+}
+  
 
   return (
     <div className="border rounded p-4 mb-4">
@@ -68,6 +96,34 @@ export default function PollCard({ poll }: any) {
       >
         Vote
       </button>
+      <hr className="my-4" />
+
+<h3 className="font-medium">
+  Predict the Winner 🏆
+</h3>
+{poll.poll_options?.map((option: any) => (
+  <div key={`predict-${option.id}`}>
+    <label>
+      <input
+        type="radio"
+        name={`prediction-${poll.id}`}
+        value={option.id}
+        onChange={(e) =>
+          setPrediction(e.target.value)
+        }
+      />
+      {" "}
+      {option.option_text}
+    </label>
+  </div>
+))}
+
+<button
+  onClick={handlePrediction}
+  className="mt-2 border px-3 py-1 rounded"
+>
+  Predict Winner
+</button>
     </div>
   );
 }
