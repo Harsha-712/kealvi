@@ -32,9 +32,16 @@ export default function PollCard({ poll }: any) {
 
   return (
     <div className="border rounded p-4 mb-4">
-      <h2 className="font-semibold mb-2">
-        {poll.question}
-      </h2>
+      <div className="mb-2">
+  <h2 className="font-semibold">
+    {poll.question}
+  </h2>
+
+  <p className="text-sm text-gray-500">
+    Posted on{" "}
+    {new Date(poll.created_at).toLocaleString()}
+  </p>
+</div>
 
       {poll.poll_options?.map((option: any) => (
         <div key={option.id}>
