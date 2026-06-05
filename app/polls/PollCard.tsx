@@ -1,11 +1,21 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function PollCard({ poll }: any) {
   
 const [selectedOption, setSelectedOption] = useState("");
 const [prediction, setPrediction] = useState("");
+
+const [currentTime, setCurrentTime] = useState(Date.now());
+
+useEffect(() => {
+  const interval = setInterval(() => {
+    setCurrentTime(Date.now());
+  }, 1000);
+
+  return () => clearInterval(interval);
+}, []);
 
   async function handleVote() {
     if (!selectedOption) {
@@ -61,7 +71,7 @@ const closingTime = new Date(
   poll.closes_at
 ).getTime();
 
-const now = Date.now();
+const now = currentTime;
 
 const pollClosed =
   now >= closingTime;
@@ -87,6 +97,15 @@ const seconds = Math.floor(
     (1000 * 60)) /
     1000
 );
+
+const winner =
+  poll.poll_options?.reduce(
+    (best: any, current: any) =>
+      (best?.poll_votes?.[0]?.count ?? 0) >
+      (current?.poll_votes?.[0]?.count ?? 0)
+        ? best
+        : current
+  );
   
 
   return (
@@ -163,6 +182,20 @@ const seconds = Math.floor(
 >
   {pollClosed ? "Prediction Closed" : "Predict Winner"}
 </button>
-    </div>
+
+{pollClosed && (
+  <div className="mt-4 p-3 border rounded bg-green-50">
+    <h3 className="font-semibold text-green-700">
+      🏆 Winner: {winner?.option_text}
+    </h3>
+
+    <p className="text-sm">
+      Total Votes:{" "}
+      {winner?.poll_votes?.[0]?.count ?? 0}
+    </p>
+  </div>
+)}
+
+</div>
   );
 }
