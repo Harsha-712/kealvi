@@ -56,6 +56,37 @@ async function handlePrediction() {
     alert(data.error || "Something went wrong");
   }
 }
+
+const closingTime = new Date(
+  poll.closes_at
+).getTime();
+
+const now = Date.now();
+
+const pollClosed =
+  now >= closingTime;
+
+const remaining =
+  Math.max(
+    0,
+    closingTime - now
+  );
+
+const hours = Math.floor(
+  remaining / (1000 * 60 * 60)
+);
+
+const minutes = Math.floor(
+  (remaining %
+    (1000 * 60 * 60)) /
+    (1000 * 60)
+);
+
+const seconds = Math.floor(
+  (remaining %
+    (1000 * 60)) /
+    1000
+);
   
 
   return (
@@ -68,6 +99,12 @@ async function handlePrediction() {
   <p className="text-sm text-gray-500">
     Posted on{" "}
     {new Date(poll.created_at).toLocaleString()}
+  </p>
+
+  <p className="text-red-500">
+    {pollClosed
+      ? "🏆 Poll Closed"
+      : `⏰ Poll closes in: ${hours}h ${minutes}m ${seconds}s`}
   </p>
 </div>
 
@@ -91,11 +128,12 @@ async function handlePrediction() {
       ))}
 
       <button
-        onClick={handleVote}
-        className="mt-3 border px-3 py-1 rounded"
-      >
-        Vote
-      </button>
+  onClick={handleVote}
+  disabled={pollClosed}
+  className="mt-3 border px-3 py-1 rounded disabled:opacity-50"
+>
+  {pollClosed ? "Poll Closed" : "Vote"}
+</button>
       <hr className="my-4" />
 
 <h3 className="font-medium">
@@ -120,9 +158,10 @@ async function handlePrediction() {
 
 <button
   onClick={handlePrediction}
-  className="mt-2 border px-3 py-1 rounded"
+  disabled={pollClosed}
+  className="mt-2 border px-3 py-1 rounded disabled:opacity-50"
 >
-  Predict Winner
+  {pollClosed ? "Prediction Closed" : "Predict Winner"}
 </button>
     </div>
   );
