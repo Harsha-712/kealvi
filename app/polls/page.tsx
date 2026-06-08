@@ -20,6 +20,15 @@ export default async function PollsPage() {
     <main className="p-6">
       <h1 className="text-2xl font-bold mb-4">Polls</h1>
 
+      <div className="mb-5">
+  <a
+    href="/create-poll"
+    className="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+  >
+    ➕ Create Poll
+  </a>
+</div>
+
       {Array.isArray(polls) && polls.length > 0 ? (
         polls.map((poll: any) => (
           <PollCard key={poll.id} poll={poll} />

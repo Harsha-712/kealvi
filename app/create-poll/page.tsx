@@ -22,7 +22,7 @@ export default function CreatePollPage() {
 
     if (res.ok) {
       alert("Poll created successfully!");
-      window.location.href = "/polls";
+      window.location.href = "/";
     } else {
       alert("Failed to create poll");
     }
