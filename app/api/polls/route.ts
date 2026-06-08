@@ -33,28 +33,27 @@ export async function GET() {
     );
   }
 }
-
 export async function POST(req: NextRequest) {
   try {
     const {
-  question,
-  options,
-  minutes,
-} = await req.json();
+      question,
+      options,
+      minutes = 60, // default 1 hour
+    } = await req.json();
 
-const closes_at = new Date(
-  Date.now() +
-  minutes * 60 * 1000
-).toISOString();
+    const closes_at = new Date(
+      Date.now() + minutes * 60 * 1000
+    ).toISOString();
 
-    const { data: poll, error: pollError } = await supabase
-      .from("polls")
-      .insert({
-  question,
-  closes_at,
-})
-      .select()
-      .single();
+    const { data: poll, error: pollError } =
+      await supabase
+        .from("polls")
+        .insert({
+          question,
+          closes_at,
+        })
+        .select()
+        .single();
 
     if (pollError) {
       return NextResponse.json(
@@ -63,14 +62,17 @@ const closes_at = new Date(
       );
     }
 
-    const optionRows = options.map((option: string) => ({
-      poll_id: poll.id,
-      option_text: option,
-    }));
+    const optionRows = options.map(
+      (option: string) => ({
+        poll_id: poll.id,
+        option_text: option,
+      })
+    );
 
-    const { error: optionError } = await supabase
-      .from("poll_options")
-      .insert(optionRows);
+    const { error: optionError } =
+      await supabase
+        .from("poll_options")
+        .insert(optionRows);
 
     if (optionError) {
       return NextResponse.json(
@@ -79,14 +81,24 @@ const closes_at = new Date(
       );
     }
 
-    return NextResponse.json(poll);
+    return NextResponse.json({
+      success: true,
+      poll,
+    });
+
   } catch (err: any) {
     return NextResponse.json(
-      { error: err.message || "Server error" },
-      { status: 500 }
+      {
+        error:
+          err.message || "Server error",
+      },
+      {
+        status: 500,
+      }
     );
   }
 }
+ 
 
 export async function DELETE(req: Request) {
   const { searchParams } =
