@@ -6,7 +6,7 @@ export default function PollCard({ poll }: any) {
   
 const [selectedOption, setSelectedOption] = useState("");
 const [prediction, setPrediction] = useState("");
-
+const [insight, setInsight] = useState("");
 const [currentTime, setCurrentTime] = useState(Date.now());
 
 useEffect(() => {
@@ -16,6 +16,34 @@ useEffect(() => {
 
   return () => clearInterval(interval);
 }, []);
+
+useEffect(() => {
+  async function loadInsight() {
+    const res = await fetch(
+      "/api/polls/insight",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type":
+            "application/json",
+        },
+        body: JSON.stringify({
+          question: poll.question,
+          options: poll.poll_options,
+        }),
+      }
+    );
+
+    const data =
+      await res.json();
+
+    setInsight(
+      data.insight || ""
+    );
+  }
+
+  loadInsight();
+}, [poll]);
 
   async function handleVote() {
     if (!selectedOption) {
@@ -182,6 +210,18 @@ const winner =
 >
   {pollClosed ? "Prediction Closed" : "Predict Winner"}
 </button>
+
+{insight && (
+  <div className="mt-4 p-3 border rounded bg-blue-50">
+    <h3 className="font-semibold">
+      🤖 AI Insight
+    </h3>
+
+    <p className="text-sm mt-1">
+      {insight}
+    </p>
+  </div>
+)}
 
 {pollClosed && (
   <div className="mt-4 p-3 border rounded bg-green-50">
