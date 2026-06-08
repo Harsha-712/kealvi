@@ -148,14 +148,15 @@ const seconds = Math.floor(
     1000
 );
 
-const winner =
-  poll.poll_options?.reduce(
-    (best: any, current: any) =>
-      (best?.poll_votes?.[0]?.count ?? 0) >
-      (current?.poll_votes?.[0]?.count ?? 0)
-        ? best
-        : current
-  );
+const winner = (poll.poll_options ?? []).length
+  ? poll.poll_options.reduce(
+      (best: any, current: any) =>
+        (best?.poll_votes?.[0]?.count ?? 0) >
+        (current?.poll_votes?.[0]?.count ?? 0)
+          ? best
+          : current
+    )
+  : null;
   
 
   return (
