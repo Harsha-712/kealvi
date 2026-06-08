@@ -95,6 +95,28 @@ async function handlePrediction() {
   }
 }
 
+async function handleDelete() {
+  const confirmDelete = confirm(
+    "Delete this poll?"
+  );
+
+  if (!confirmDelete) return;
+
+  const res = await fetch(
+    `/api/polls?id=${poll.id}`,
+    {
+      method: "DELETE",
+    }
+  );
+
+  if (res.ok) {
+    alert("Poll deleted");
+    window.location.reload();
+  } else {
+    alert("Delete failed");
+  }
+}
+
 const closingTime = new Date(
   poll.closes_at
 ).getTime();
@@ -180,6 +202,13 @@ const winner =
   className="mt-3 border px-3 py-1 rounded disabled:opacity-50"
 >
   {pollClosed ? "Poll Closed" : "Vote"}
+</button>
+
+<button
+  onClick={handleDelete}
+  className="ml-2 border px-3 py-1 rounded bg-red-500 text-white"
+>
+  Delete Poll
 </button>
       <hr className="my-4" />
 

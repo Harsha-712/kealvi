@@ -7,6 +7,7 @@ export default function CreatePollPage() {
   const [option1, setOption1] = useState("");
   const [option2, setOption2] = useState("");
   const [option3, setOption3] = useState("");
+  const [minutes, setMinutes] = useState(60);
 
   async function handleSubmit() {
     const res = await fetch("/api/polls", {
@@ -15,9 +16,10 @@ export default function CreatePollPage() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        question,
-        options: [option1, option2, option3],
-      }),
+  question,
+  options: [option1, option2, option3],
+  minutes,
+}),
     });
 
     if (res.ok) {
@@ -62,6 +64,16 @@ export default function CreatePollPage() {
         value={option3}
         onChange={(e) => setOption3(e.target.value)}
         className="border p-2 w-full mb-3"
+      />
+
+      <input
+        type="number"
+        placeholder="Poll duration (minutes)"
+        value={minutes}
+        onChange={(e) =>
+        setMinutes(Number(e.target.value))
+      }
+       className="border p-2 w-full mb-3"
       />
 
       <button

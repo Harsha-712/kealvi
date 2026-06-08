@@ -27,9 +27,19 @@ export default async function Page() {
 
   return (
     <main className="mx-auto max-w-2xl p-6">
-      <h1 className="mb-4 text-2xl font-medium">
-        Live Q&amp;A
-      </h1>
+
+  <div className="flex justify-between items-center mb-4">
+    <h1 className="text-2xl font-medium">
+      Live Q&A
+    </h1>
+
+    <a
+      href="/create-poll"
+      className="border px-4 py-2 rounded bg-blue-500 text-white"
+    >
+      + Create Poll
+    </a>
+  </div>
 
       {Array.isArray(polls) &&
         polls.map((poll: any) => (

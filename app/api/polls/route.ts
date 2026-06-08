@@ -36,11 +36,23 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   try {
-    const { question, options } = await req.json();
+    const {
+  question,
+  options,
+  minutes,
+} = await req.json();
+
+const closes_at = new Date(
+  Date.now() +
+  minutes * 60 * 1000
+).toISOString();
 
     const { data: poll, error: pollError } = await supabase
       .from("polls")
-      .insert({ question })
+      .insert({
+  question,
+  closes_at,
+})
       .select()
       .single();
 
@@ -74,4 +86,61 @@ export async function POST(req: NextRequest) {
       { status: 500 }
     );
   }
+}
+
+export async function DELETE(req: Request) {
+  const { searchParams } =
+    new URL(req.url);
+
+  const id =
+    searchParams.get("id");
+
+  if (!id) {
+    return Response.json(
+      { error: "Missing id" },
+      { status: 400 }
+    );
+  }
+
+  await supabase
+    .from("poll_votes")
+    .delete()
+    .in(
+      "option_id",
+      (
+        await supabase
+          .from("poll_options")
+          .select("id")
+          .eq("poll_id", id)
+      ).data?.map(
+        (x: any) => x.id
+      ) || []
+    );
+
+  await supabase
+    .from("poll_options")
+    .delete()
+    .eq("poll_id", id);
+
+  await supabase
+    .from("poll_predictions")
+    .delete()
+    .eq("poll_id", id);
+
+  const { error } =
+    await supabase
+      .from("polls")
+      .delete()
+      .eq("id", id);
+
+  if (error) {
+    return Response.json(
+      { error: error.message },
+      { status: 500 }
+    );
+  }
+
+  return Response.json({
+    success: true,
+  });
 }
