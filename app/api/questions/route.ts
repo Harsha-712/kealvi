@@ -46,9 +46,11 @@ export async function POST(req: Request) {
         await ai.models.generateContent({
           model: "gemini-2.5-flash",
           contents: `
-Classify this programming question into ONE category.
+  You are an expert programming classifier.
 
-Possible categories:
+Classify the following programming question into EXACTLY ONE category.
+
+Available categories:
 React
 Next.js
 JavaScript
@@ -59,11 +61,22 @@ Deployment
 AI
 General
 
-Return ONLY the category.
+Rules:
+- SQL, MySQL, PostgreSQL, MongoDB, indexes, constraints, tables, queries, voting systems → Database
+- Vercel, Netlify, hosting, deployment, production builds → Deployment
+- React hooks, state, props, components → React
+- Next.js routing, API routes, server components → Next.js
+- Machine learning, Gemini, AI models, LLMs → AI
+- Core Java topics → Java
+- Core Python topics → Python
+
+Return ONLY the category name.
+Do not explain.
 
 Question:
 ${body}
-`,
+,
+`
         });
 
       category =
