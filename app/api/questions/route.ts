@@ -20,12 +20,38 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
   const { body, author } = await req.json();
 
+  const aiRes = await fetch(
+    `${process.env.NEXT_PUBLIC_SITE_URL}/api/ai/category`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        question: body,
+      }),
+    }
+  );
+
+  const aiData = await aiRes.json();
+
+  const finalBody =
+    `🏷️ ${aiData.category}\n\n${body}`;
+
   const { data, error } = await supabase
     .from("questions")
-    .insert({ body, author })
+    .insert({
+      body: finalBody,
+      author,
+    })
     .select()
     .single();
 
-  if (error) return Response.json({ error: error.message }, { status: 500 });
+  if (error)
+    return Response.json(
+      { error: error.message },
+      { status: 500 }
+    );
+
   return Response.json(data);
 }
