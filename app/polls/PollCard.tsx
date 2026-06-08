@@ -159,18 +159,24 @@ const winner =
   
 
   return (
-    <div className="border rounded p-4 mb-4">
+    <div className="glass-card rounded-2xl border border-slate-200 shadow-lg p-6 mb-6 animate-fade-in">
       <div className="mb-2">
-  <h2 className="font-semibold">
+ <h2 className="text-xl font-bold text-slate-900 mb-2">
     {poll.question}
   </h2>
 
-  <p className="text-sm text-gray-500">
+ <p className="text-sm text-slate-500 mb-2">
     Posted on{" "}
     {new Date(poll.created_at).toLocaleString()}
   </p>
 
-  <p className="text-red-500">
+  <p
+  className={`font-semibold ${
+    pollClosed
+      ? "text-red-500"
+      : "text-emerald-600"
+  }`}
+>
     {pollClosed
       ? "🏆 Poll Closed"
       : `⏰ Poll closes in: ${hours}h ${minutes}m ${seconds}s`}
@@ -199,14 +205,14 @@ const winner =
       <button
   onClick={handleVote}
   disabled={pollClosed}
-  className="mt-3 border px-3 py-1 rounded disabled:opacity-50"
+  className="mt-4 bg-indigo-500 hover:bg-indigo-600 text-white px-5 py-2 rounded-xl font-semibold transition disabled:opacity-50"
 >
   {pollClosed ? "Poll Closed" : "Vote"}
 </button>
 
 <button
   onClick={handleDelete}
-  className="ml-2 border px-3 py-1 rounded bg-red-500 text-white"
+ className="ml-2 bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded-xl font-semibold transition"
 >
   Delete Poll
 </button>
@@ -241,7 +247,7 @@ const winner =
 </button>
 
 {insight && (
-  <div className="mt-4 p-3 border rounded bg-blue-50">
+  <div className="mt-5 p-4 rounded-2xl bg-indigo-50 border border-indigo-200 animate-fade-in">
     <h3 className="font-semibold">
       🤖 AI Insight
     </h3>
@@ -253,7 +259,7 @@ const winner =
 )}
 
 {pollClosed && (
-  <div className="mt-4 p-3 border rounded bg-green-50">
+  <div className="mt-5 p-4 rounded-2xl bg-emerald-50 border border-emerald-200 animate-fade-in">
     <h3 className="font-semibold text-green-700">
       🏆 Winner: {winner?.option_text}
     </h3>

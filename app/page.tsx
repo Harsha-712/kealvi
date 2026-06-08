@@ -26,16 +26,17 @@ export default async function Page() {
   const polls = await getPolls();
 
   return (
-    <main className="mx-auto max-w-2xl p-6">
+    <main className="min-h-screen bg-slate-50">
+  <div className="max-w-3xl mx-auto px-6 py-8">
 
-  <div className="flex justify-between items-center mb-4">
-    <h1 className="text-2xl font-medium">
+  <div className="flex justify-between items-center mb-8">
+    <h1 className="text-4xl font-extrabold tracking-tight text-slate-900">
       Live Q&A
     </h1>
 
     <a
       href="/create-poll"
-      className="border px-4 py-2 rounded bg-blue-500 text-white"
+      className="bg-indigo-500 hover:bg-indigo-600 text-white px-5 py-3 rounded-xl font-semibold shadow-indigo transition"
     >
       + Create Poll
     </a>
@@ -53,6 +54,7 @@ export default async function Page() {
         initialQuestions={questions}
         initialHasMore={hasMore}
       />
+      </div>
     </main>
   );
 }
