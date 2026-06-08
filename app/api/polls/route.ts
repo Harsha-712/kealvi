@@ -62,17 +62,21 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const optionRows = options.map(
-      (option: string) => ({
-        poll_id: poll.id,
-        option_text: option,
-      })
-    );
+    const optionRows = options
+  .filter((o: string) => o?.trim())
+  .map((option: string) => ({
+    poll_id: poll.id,
+    option_text: option.trim(),
+  }));
 
-    const { error: optionError } =
-      await supabase
-        .from("poll_options")
-        .insert(optionRows);
+   console.log("OPTION ROWS:", optionRows);
+
+const { error: optionError } =
+  await supabase
+    .from("poll_options")
+    .insert(optionRows);
+
+console.log("OPTION INSERT ERROR:", optionError);
 
     if (optionError) {
       return NextResponse.json(
